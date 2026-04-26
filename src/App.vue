@@ -63,7 +63,7 @@
 import { ref, onMounted } from "vue";
 import { projectApi } from "./services/projectApi";
 import type { Project} from "./models/project";
-import { getUser } from "./services/projectApi";
+
 import ProjectBoard from "./components/ProjectBoard.vue";
 import type { User } from "./models/user";
 
@@ -79,7 +79,6 @@ const activeProjectId = ref<string | null>(null);
 
 onMounted(() => {
   projects.value = projectApi.getAll();
-  user.value = getUser();
   activeProjectId.value = projectApi.getActiveProject();
 });
 

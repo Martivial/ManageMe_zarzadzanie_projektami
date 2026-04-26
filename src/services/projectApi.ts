@@ -49,14 +49,14 @@ export const projectApi = {
   deleteActiveProject
 }
 
-const mockUser: User = {
-  id: "1",
-  firstName: "Mateusz",
-  lastName: "Zemsta",
-}
+const mockUsers: User[] = [
+  { id: "1", firstName: "Mateusz", lastName: "Zemsta", role: "admin" },
+  { id: "2", firstName: "Anna", lastName: "Kowalska", role: "developer" },
+  { id: "3", firstName: "Jan", lastName: "Nowak", role: "devops" }
+];
 
-export function getUser() {
-  return mockUser;
+export function getUser(): User[] {
+  return mockUsers;
 }
 export function setActiveProject(id: string) {
   localStorage.setItem(ACTIVE_KEY, id);

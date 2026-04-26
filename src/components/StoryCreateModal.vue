@@ -4,9 +4,7 @@
     <div class="modal-content p-3">
 
       <div class="d-flex justify-content-between mb-2">
-        <h5 class="m-0">
-          {{ editingId ? "Edytuj" : "Nowa historyjka" }}
-        </h5>
+        <h5 class="p-2 text-center"> {{ editingId ? "Edytuj" : "Nowa historyjka" }}</h5>
 
         <button class="btn-close" @click="emit('close')"></button>
       </div>

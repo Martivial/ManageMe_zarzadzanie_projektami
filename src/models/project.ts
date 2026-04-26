@@ -13,3 +13,16 @@ export interface Story {
     ownerId: string;
     createdAt: string;
 }
+export interface Task {
+    id: string;
+    name: string;
+    description: string;
+    priority: "low" | "medium" | "high";
+    status: "todo" | "doing" | "done";
+    storyId: string;
+    projectId: string;
+    assignedUserId?: string;
+    createdAt: string;
+    startAt?: string;
+    endAt?: string;
+}

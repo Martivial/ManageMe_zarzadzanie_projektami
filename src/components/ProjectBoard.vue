@@ -17,7 +17,7 @@
             <h5>TODO</h5>
             <button class="btn btn-sm btn-outline-primary mb-2" @click="openModal('todo')">+ Add</button>
 
-            <div v-for="s in todo" :key="s.id" class="card p-2 mb-2">
+            <div v-for="s in getStoriesByStatus('todo')" :key="s.id" class="card p-2 mb-2" @click="openTask(s)">
               <div class="d-flex justify-content-between">
 
                 <div class="text-start">
@@ -42,7 +42,7 @@
             <h5>DOING</h5>
             <button class="btn btn-sm btn-outline-primary mb-2" @click="openModal('doing')">+ Add</button>
 
-            <div v-for="s in doing" :key="s.id" class="card p-2 mb-2">
+            <div v-for="s in getStoriesByStatus('doing')" :key="s.id" class="card p-2 mb-2" @click="openTask(s)">
               <div class="d-flex justify-content-between">
 
                 <div class="text-start">
@@ -68,7 +68,7 @@
             <h5>DONE</h5>
             <button class="btn btn-sm btn-outline-primary mb-2" @click="openModal('done')">+ Add</button>
 
-            <div v-for="s in done" :key="s.id" class="card p-2 mb-2">
+            <div v-for="s in getStoriesByStatus('done')" :key="s.id" class="card p-2 mb-2" @click="openTask(s)">
               <div class="d-flex justify-content-between">
 
                 <div class="text-start">
@@ -95,9 +95,11 @@
     </div>
   </div>
 
-  <StoryCreateModal
-    v-if="showModal" :projectId="projectId" :status="selectedStatus" :story="selectedStory" @close="showModal=false" @created="reload"
+  <StoryCreateModal 
+  v-if="showModal" :projectId="projectId" :status="selectedStatus" :story="selectedStory" @close="showModal=false" @created="reload"
   />
+  <TaskModal v-if="showTaskModal" :story="selectedStoryForTask" @close = "showTaskModal = false" />
+
 </template>
 
 <script setup lang="ts">
@@ -110,6 +112,7 @@ import type { Story } from "../models/project";
 import StoryCreateModal from "./StoryCreateModal.vue";
 import { projectApi } from "../services/projectApi";
 import type { Project } from "../models/project";
+import TaskModal from "./TaskModal.vue";
 
 
 const selectedStatus = ref<"todo" | "doing" | "done">("todo");
@@ -117,8 +120,13 @@ const allStories = ref<Story[]>([]);
 const showModal = ref(false);
 
 const selectedStory = ref<Story | null>(null);
+    
 const project = computed<Project | undefined>(() => 
     projectApi.getAll().find(p => p.id === props.projectId));
+
+const selectedStoryForTask = ref<Story | null> (null);
+const showTaskModal = ref(false);
+
 
 onMounted(() => {
   allStories.value = storyApi.getAll();
@@ -128,18 +136,9 @@ const stories = computed(() =>
   allStories.value.filter(s => s.projectId === props.projectId)
 );
 
-const todo = computed(() =>
-  stories.value.filter(s => s.status === "todo")
-);
-
-const doing = computed(() =>
-  stories.value.filter(s => s.status === "doing")
-);
-
-const done = computed(() =>
-  stories.value.filter(s => s.status === "done")
-);
-
+function getStoriesByStatus(status: "todo" | "doing" | "done") {
+  return stories.value.filter(s => s.status === status);
+}
 function reload() {
     allStories.value = storyApi.getAll();
     showModal.value = false;
@@ -158,7 +157,14 @@ function editStory(story: Story) {
     selectedStatus.value = story.status;
     showModal.value = true;
 }
+
+
+function openTask(story: Story) {
+  selectedStoryForTask.value = story;
+  showTaskModal.value = true;
+}
 </script>
+
 
 <style scoped>
 .card:hover {
