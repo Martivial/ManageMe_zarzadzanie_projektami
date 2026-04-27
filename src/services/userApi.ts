@@ -1,16 +1,16 @@
 import type { User } from "../models/user";
 
 const mockUsers: User[] = [
-    { id: "1", firstName: "Mateusz", lastName: "Zemsta", role: "admin" },
-    { id: "2", firstName: "Anna", lastName: "Kowalska", role: "developer" },
-    { id: "3", firstName: "Jan", lastName: "Nowak", role: "devops" }
+    { id: 1, firstName: "Mateusz", lastName: "Zemsta", role: "admin" },
+    { id: 2, firstName: "Anna", lastName: "Kowalska", role: "developer" },
+    { id: 3, firstName: "Jan", lastName: "Nowak", role: "devops" }
 ];
 
 function getAll(): User[] {
     return mockUsers;
 }
 
-function getById(id: string): User | undefined {
+function getById(id: number): User | undefined {
     return mockUsers.find(u => u.id === id);
 }
 

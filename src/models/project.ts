@@ -21,7 +21,8 @@ export interface Task {
     status: "todo" | "doing" | "done";
     storyId: string;
     projectId: string;
-    assignedUserId?: string;
+    assignedUserId?: number;
+    estimatedHours?: number;
     createdAt: string;
     startAt?: string;
     endAt?: string;

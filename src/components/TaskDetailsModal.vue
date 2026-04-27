@@ -3,107 +3,93 @@
     <div class="modal-dialog modal-md modal-dialog-centered">
       <div class="modal-content p-3">
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="mb-0">{{ localTask?.name }}</h5>
-          <button class="btn btn-secondary btn-sm" @click="$emit('close')">X</button>
+        <h5>{{ task?.name }}</h5>
+
+        <div v-if="task">
+
+          <div>Opis: {{ task.description }}</div>
+          <div>Przypisana historyjka {{ getStoryName(task.storyId)}}</div>
+          <div>Priorytet: {{ task.priority }}</div>
+          <div>Status: {{ task.status }}</div>
+          <div>Data startu {{ formatDate(task.startAt) }}</div>
+          <div>Koniec: {{ formatDate(task.endAt) || "-" }}</div>
+          <div>Przypisana osoba: {{ getUserName(task?.assignedUserId)}}</div>
+          <div>Szacowane godziny: {{ task.estimatedHours }}</div>
+          
+
         </div>
-
-        <div v-if="localTask">
-
-          <div class="mb-2"><b>Opis:</b> {{ localTask.description }}</div>
-          <div class="mb-2"><b>Priorytet:</b> {{ localTask.priority }}</div>
-          <div class="mb-2"><b>Status:</b> {{ localTask.status }}</div>
-
-          <div class="mb-2"><b>Story ID:</b> {{ localTask.storyId }}</div>
-
-          <div class="mb-2"><b>Start:</b> {{ localTask.startAt ?? "-" }}</div>
-          <div class="mb-2"><b>End:</b> {{ localTask.endAt ?? "-" }}</div>
-
-          <hr />
-
-          <!-- USER ASSIGN -->
-          <label class="mb-1">Przypisana osoba</label>
-          <select v-model="localTask.assignedUserId" class="form-control mb-2">
-            <option value="">-- brak --</option>
-            <option v-for="u in users" :key="u.id" :value="u.id">
-              {{ u.firstName }} {{ u.lastName }} ({{ u.role }})
+        <hr>
+        <div>
+          <h4>Przypisz osobę</h4>
+          <select v-model="selectedUserId">
+            <option v-for="u in users.filter(u => u.role !== 'admin')" :key="u.id" :value="u.id">
+            {{ u.firstName }} {{ u.lastName }} {{ u.role }}
             </option>
           </select>
-
-          <button class="btn btn-primary btn-sm mb-3" @click="assignUser">
-            Przypisz osobę
-          </button>
-
-          <hr />
-
-          <!-- CURRENT USER -->
-          <div class="mb-2">
-            <b>Aktualny user:</b>
-            <span v-if="getUserById(localTask.assignedUserId)">
-              {{ getUserById(localTask.assignedUserId)?.firstName }}
-              {{ getUserById(localTask.assignedUserId)?.lastName }}
-              ({{ getUserById(localTask.assignedUserId)?.role }})
-            </span>
-            <span v-else>-</span>
-          </div>
-
+          <button @click="assignUser">Przypisz</button>
         </div>
+        <button v-if="task?.status === 'doing'" @click="markDone">Zaznacz wykonanie zadania</button>
+        <button @click="$emit('close')">Zamknij</button>
 
       </div>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import type { Task } from "../models/project"
 import type { User } from "../models/user"
-
-import { ref, watch } from "vue"
-import { taskApi } from "../services/taskApi"
 import { userApi } from "../services/userApi"
+import {ref} from 'vue';
+import {storyApi} from "../services/storyApi"
+import type {Story} from "../models/project"
+import {taskApi} from "../services/taskApi"
 
-const props = defineProps<{ task: Task | null }>()
-const emit = defineEmits(["close", "updated"])
 
-/* USERS z API */
-const users: User[] = userApi.getAll()
+const stories: Story[] = storyApi.getAll();
+const users: User[] = userApi.getAll();
+const emit = defineEmits(["updated", "close"]);
 
-/* lokalna kopia taska */
-const localTask = ref<Task | null>(null)
+const props = defineProps<{task: Task | null}>();
 
-/* kopiowanie props → local */
-watch(
-  () => props.task,
-  (t) => {
-    if (t) {
-      localTask.value = { ...t }
-    }
-  },
-  { immediate: true }
-)
+const selectedUserId = ref<number | null>(null);
 
-/* helper */
-function getUserById(id?: string) {
-  return users.find(u => u.id === id)
+function getStoryName(id: string) {
+  return stories.find(s=> s.id === id)?.name ||"-"
+}
+function getUserName(id?: number) {
+  const user = users.find(u => u.id === id)
+  return user ? `${user.firstName} ${user.lastName} ${user.role}` : "-"
+}
+function formatDate(date?: string) {
+  if (!date) return "-"
+  return new Date(date).toLocaleString("pl-PL")
+}
+function assignUser() {
+  if (!props.task) return
+  props.task.assignedUserId = selectedUserId.value ?? undefined
+
+  if(props.task.status === "todo") {
+    props.task.status = "doing";
+    props.task.startAt = new Date().toISOString();
+  }
+  taskApi.update(props.task)
+
+  const story = storyApi.getAll().find( s=>s.id === props.task!.storyId)
+
+  if(story && story.status === "todo") {
+    story.status = "doing"
+    storyApi.update(story)
+  }
+  emit("updated")
 }
 
-/* LOGIKA PRZYPISANIA USERA */
-function assignUser() {
-  if (!localTask.value) return
+function markDone() {
+  if (!props.task) return 
+  
+  props.task.status = "done"
+  props.task.endAt = new Date().toISOString()
 
-  if (!localTask.value.assignedUserId) return
-
-  // jeśli pierwszy raz przypisanie → start taska
-  if (localTask.value.status === "todo") {
-    localTask.value.status = "doing"
-  }
-
-  if (!localTask.value.startAt) {
-    localTask.value.startAt = new Date().toISOString()
-  }
-
-  taskApi.update(localTask.value)
-
+  taskApi.update(props.task)
   emit("updated")
 }
 </script>

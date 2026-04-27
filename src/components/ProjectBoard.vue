@@ -98,7 +98,7 @@
   <StoryCreateModal 
   v-if="showModal" :projectId="projectId" :status="selectedStatus" :story="selectedStory" @close="showModal=false" @created="reload"
   />
-  <TaskModal v-if="showTaskModal" :story="selectedStoryForTask" @close = "showTaskModal = false" />
+  <TaskModal v-if="showTaskModal" :story="selectedStoryForTask" @close = "showTaskModal = false" @updated="sync" />
 
 </template>
 
@@ -116,7 +116,7 @@ import TaskModal from "./TaskModal.vue";
 
 
 const selectedStatus = ref<"todo" | "doing" | "done">("todo");
-const allStories = ref<Story[]>([]);
+const allStories = ref(storyApi.getAll());
 const showModal = ref(false);
 
 const selectedStory = ref<Story | null>(null);
@@ -158,6 +158,7 @@ function editStory(story: Story) {
     showModal.value = true;
 }
 
+function sync() { allStories.value = storyApi.getAll()}
 
 function openTask(story: Story) {
   selectedStoryForTask.value = story;

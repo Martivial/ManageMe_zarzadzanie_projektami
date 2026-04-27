@@ -88,7 +88,7 @@
     </div>
   </div>
 
-  <!-- TASK DETAILS MODAL -->
+
   <TaskDetailsModal
     v-if="showDetails"
     :task="selectedTask"
@@ -104,6 +104,7 @@ import { taskApi } from "../services/taskApi"
 import TaskDetailsModal from "./TaskDetailsModal.vue"
 
 const props = defineProps<{ story: Story | null }>()
+const emit = defineEmits(["updated", "close"]);
 
 const tasks = ref<Task[]>([])
 
@@ -124,14 +125,15 @@ onMounted(() => {
 
 function reloadTasks() {
   tasks.value = taskApi.getAll().filter(t => t.storyId === props.story!.id)
+  emit("updated");
 }
 
-/* KANBAN */
+
 const todo = computed(() => tasks.value.filter(t => t.status === "todo"))
 const doing = computed(() => tasks.value.filter(t => t.status === "doing"))
 const done = computed(() => tasks.value.filter(t => t.status === "done"))
 
-/* CREATE + UPDATE */
+
 function createTask() {
   if (!props.story) return
   if (!name.value || !description.value) return
@@ -157,7 +159,7 @@ function createTask() {
   reloadTasks()
 }
 
-/* EDIT */
+
 function editTask(task: Task) {
   editingTaskId.value = task.id
   name.value = task.name
@@ -167,13 +169,11 @@ function editTask(task: Task) {
   showForm.value = true
 }
 
-/* OPEN DETAILS MODAL */
 function openTaskDetails(task: Task) {
   selectedTask.value = task
   showDetails.value = true
 }
 
-/* RESET */
 function resetForm() {
   editingTaskId.value = null
   showForm.value = false
