@@ -1,4 +1,5 @@
 import type { Task } from "../models/project";
+import { storyApi } from "./storyApi"
 
 function getAll(): Task[] {
     const data = localStorage.getItem("tasks");
@@ -28,4 +29,17 @@ function getByStory(storyId: string): Task[] {
     return getAll().filter(t => t.storyId === storyId);
 }
 
-export const taskApi = { getAll, create, update, remove, getByStory };
+function updateStoryStatus(storyId: string) {
+    const tasks = getAll().filter(t => t.storyId === storyId)
+    const story = storyApi.getAll().find(s => s.id === storyId)
+
+    if (!story) return
+
+    const allDone = tasks.every(t => t.status === "done")
+
+    if (allDone) {
+        story!.status = "done"
+        storyApi.update(story)
+    }
+}
+export const taskApi = { getAll, create, update, remove, getByStory, updateStoryStatus };

@@ -98,7 +98,7 @@
   <StoryCreateModal 
   v-if="showModal" :projectId="projectId" :status="selectedStatus" :story="selectedStory" @close="showModal=false" @created="reload"
   />
-  <TaskModal v-if="showTaskModal" :story="selectedStoryForTask" @close = "showTaskModal = false" @updated="sync" />
+  <TaskModal v-if="showTaskModal" :story="selectedStoryForTask" @close = "showTaskModal = false" @updated="reload" />
 
 </template>
 
@@ -157,8 +157,6 @@ function editStory(story: Story) {
     selectedStatus.value = story.status;
     showModal.value = true;
 }
-
-function sync() { allStories.value = storyApi.getAll()}
 
 function openTask(story: Story) {
   selectedStoryForTask.value = story;

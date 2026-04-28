@@ -90,6 +90,7 @@ function markDone() {
   props.task.endAt = new Date().toISOString()
 
   taskApi.update(props.task)
+  taskApi.updateStoryStatus(props.task.storyId);
   emit("updated")
 }
 </script>

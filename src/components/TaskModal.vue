@@ -23,19 +23,9 @@
             <option value="high">High</option>
           </select>
 
-          <select v-model="status" class="form-control mb-2">
-            <option value="todo">Todo</option>
-            <option value="doing">Doing</option>
-            <option value="done">Done</option>
-          </select>
-
           <div class="d-flex gap-2">
-            <button class="btn btn-success btn-sm" type="submit">
-              {{ editingTaskId ? "Update" : "Create" }}
-            </button>
-            <button class="btn btn-secondary btn-sm" type="button" @click="showForm = false">
-              Anuluj
-            </button>
+            <button class="btn btn-success btn-sm" type="submit">Create</button>
+            <button class="btn btn-secondary btn-sm" type="button" @click="showForm = false">Anuluj</button>
           </div>
 
         </form>
@@ -45,12 +35,7 @@
 
           <div class="col">
             <h6>TODO</h6>
-            <div
-              v-for="t in todo"
-              :key="t.id"
-              class="card p-2 mb-2"
-              @click="openTaskDetails(t)"
-            >
+            <div v-for="t in todo" :key="t.id" class="card p-2 mb-2" @click="openTaskDetails(t)">
               <b>{{ t.name }}</b>
               <div class="text-muted small">{{ t.description }}</div>
             </div>
@@ -58,12 +43,7 @@
 
           <div class="col">
             <h6>DOING</h6>
-            <div
-              v-for="t in doing"
-              :key="t.id"
-              class="card p-2 mb-2"
-              @click="openTaskDetails(t)"
-            >
+            <div v-for="t in doing":key="t.id" class="card p-2 mb-2" @click="openTaskDetails(t)">
               <b>{{ t.name }}</b>
               <div class="text-muted small">{{ t.description }}</div>
             </div>
@@ -71,30 +51,17 @@
 
           <div class="col">
             <h6>DONE</h6>
-            <div
-              v-for="t in done"
-              :key="t.id"
-              class="card p-2 mb-2"
-              @click="openTaskDetails(t)"
-            >
+            <div v-for="t in done":key="t.id" class="card p-2 mb-2" @click="openTaskDetails(t)">
               <b>{{ t.name }}</b>
               <div class="text-muted small">{{ t.description }}</div>
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
 
-
-  <TaskDetailsModal
-    v-if="showDetails"
-    :task="selectedTask"
-    @close="showDetails = false"
-    @updated="reloadTasks"
-  />
+  <TaskDetailsModal v-if="showDetails" :task="selectedTask" @close="showDetails = false" @updated="reloadTasks"/>
 </template>
 
 <script setup lang="ts">
@@ -111,13 +78,11 @@ const tasks = ref<Task[]>([])
 const showForm = ref(false)
 const showDetails = ref(false)
 
-const editingTaskId = ref<string | null>(null)
 const selectedTask = ref<Task | null>(null)
 
 const name = ref("")
 const description = ref("")
 const priority = ref<"low" | "medium" | "high">("low")
-const status = ref<"todo" | "doing" | "done">("todo")
 
 onMounted(() => {
   if (props.story) reloadTasks()
@@ -125,48 +90,33 @@ onMounted(() => {
 
 function reloadTasks() {
   tasks.value = taskApi.getAll().filter(t => t.storyId === props.story!.id)
-  emit("updated");
+  emit("updated")
 }
-
 
 const todo = computed(() => tasks.value.filter(t => t.status === "todo"))
 const doing = computed(() => tasks.value.filter(t => t.status === "doing"))
 const done = computed(() => tasks.value.filter(t => t.status === "done"))
-
 
 function createTask() {
   if (!props.story) return
   if (!name.value || !description.value) return
 
   const task = {
-    id: editingTaskId.value ?? String(Date.now()),
+    id: String(Date.now()),
     name: name.value,
     description: description.value,
     priority: priority.value,
-    status: status.value,
+    status: "todo" as const,
     storyId: props.story.id,
     projectId: props.story.projectId,
     createdAt: new Date().toISOString()
   }
-
-  if (editingTaskId.value) {
-    taskApi.update(task)
-  } else {
     taskApi.create(task)
-  }
 
-  resetForm()
-  reloadTasks()
-}
-
-
-function editTask(task: Task) {
-  editingTaskId.value = task.id
-  name.value = task.name
-  description.value = task.description
-  priority.value = task.priority
-  status.value = task.status
-  showForm.value = true
+    reloadTasks()
+    showForm.value = false;
+    name.value = ""
+    description.value = ""
 }
 
 function openTaskDetails(task: Task) {
@@ -174,12 +124,7 @@ function openTaskDetails(task: Task) {
   showDetails.value = true
 }
 
-function resetForm() {
-  editingTaskId.value = null
-  showForm.value = false
-  name.value = ""
-  description.value = ""
-  priority.value = "low"
-  status.value = "todo"
+function formateDate(date?:string) {
+
 }
 </script>
