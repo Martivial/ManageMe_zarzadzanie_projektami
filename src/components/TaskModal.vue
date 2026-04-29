@@ -33,16 +33,16 @@
         <!-- KANBAN -->
         <div class="row mt-2">
 
-          <div class="col">
-            <h6>TODO</h6>
+          <div class="col border-end border-1 border-secondary">
+            <h6 class="text-center">TODO</h6>
             <div v-for="t in todo" :key="t.id" class="card p-2 mb-2" @click="openTaskDetails(t)">
               <b>{{ t.name }}</b>
               <div class="text-muted small">{{ t.description }}</div>
             </div>
           </div>
 
-          <div class="col">
-            <h6>DOING</h6>
+          <div class="col border-end border-1 border-secondary">
+            <h6 class="text-center">DOING</h6>
             <div v-for="t in doing":key="t.id" class="card p-2 mb-2" @click="openTaskDetails(t)">
               <b>{{ t.name }}</b>
               <div class="text-muted small">{{ t.description }}</div>
@@ -50,10 +50,22 @@
           </div>
 
           <div class="col">
-            <h6>DONE</h6>
+            <h6 class="text-center">DONE</h6>
             <div v-for="t in done":key="t.id" class="card p-2 mb-2" @click="openTaskDetails(t)">
+              <span class="badge text-black bg-warning mb-1 ">Data utworzenia: {{ formateDate(t.createdAt) }}</span>
+              <span class="badge bg-dark text-light mb-1">Data zakończenia: {{ formateDate(t.endAt) }}</span>
+              
+              <div class="d-flex space-between">
               <b>{{ t.name }}</b>
+              <span class="badge mb-1 ms-1" :class="{
+                'bg-success' : t.priority === 'low',
+                'bg-warning' : t.priority === 'medium',
+                'bg-danger': t.priority === 'high'
+              }">Priorytet: {{ getPrio(t.priority) }}</span>
+              
+              </div>
               <div class="text-muted small">{{ t.description }}</div>
+             
             </div>
           </div>
         </div>
@@ -126,5 +138,23 @@ function openTaskDetails(task: Task) {
 
 function formateDate(date?:string) {
 
+  if(!date) return "-"
+
+  const d = new Date(date)
+  const time = d.toLocaleTimeString("pl-PL", {
+    hour: "2-digit",
+    minute: "2-digit"
+  })
+  const day = d.toLocaleDateString("pl-PL", {
+  
+  })
+  return `${time} ${day}`
+}
+function getPrio (p:string) {
+  if(p === "low") return "niski"
+  if(p === "medium") return "średni"
+  if(p === "high") return "wysoki"
+
+  return "-"
 }
 </script>
