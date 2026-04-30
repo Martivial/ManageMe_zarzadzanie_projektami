@@ -6,7 +6,6 @@
         <h5>{{ task?.name }}</h5>
 
         <div v-if="task">
-
           <div>Opis: {{ task.description }}</div>
           <div>Przypisana historyjka {{ getStoryName(task.storyId)}}</div>
           <div>Priorytet: {{ task.priority }}</div>
@@ -15,8 +14,6 @@
           <div>Koniec: {{ formatDate(task.endAt) || "-" }}</div>
           <div>Przypisana osoba: {{ getUserName(task?.assignedUserId)}}</div>
           <div>Szacowane godziny: {{ task.estimatedHours }}</div>
-          
-
         </div>
         <hr>
         <div>
