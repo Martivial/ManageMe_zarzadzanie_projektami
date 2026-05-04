@@ -14,11 +14,14 @@
         <input v-model="name" class="form-control" placeholder="Nazwa" required />
         <input v-model="description" class="form-control" placeholder="Opis" required />
 
-        <select v-model="priority" class="form-select">
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+        <div class="d-flex align-items-center gap-2">
+        <label>Wybierz priorytet:</label>
+        <select v-model="priority" class="form-select w-auto">
+          <option value="low">Niski</option>
+          <option value="medium">Średni</option>
+          <option value="high">Wysoki</option>
         </select>
+        </div>      
 
         <select v-if="props.story" v-model="status" class="form-select">
           <option value="todo">TODO</option>

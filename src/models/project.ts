@@ -22,7 +22,7 @@ export interface Task {
     storyId: string;
     projectId: string;
     assignedUserId?: number;
-    estimatedHours?: number;
+    estimatedHours: number;
     createdAt: string;
     startAt?: string;
     endAt?: string;

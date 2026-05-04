@@ -1,4 +1,181 @@
+/* =========================
+   THEME VARIABLES
+========================= */
+
+:root {
+    --primary: #01a28b;
+
+    --bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6c757d;
+
+    --card: #f8f9fa;
+    --border: #dee2e6;
+}
+
+[data-theme="dark"] {
+    --primary: #01a28b;
+
+    --bg: #121212;
+    --text: #f1f1f1;
+    --muted: #b5b5b5;
+
+    --card: #1e1e1e;
+    --border: #2c2c2c;
+}
+
+/* =========================
+   GLOBAL
+========================= */
+
 body {
-    background-color: #0b1a33;
+    background: var(--bg);
+    color: var(--text);
+    transition: all 0.25s ease;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.border-end {
+    border-color: var(--border) !important;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    background: var(--card);
+    border-color: var(--border);
+    color: var(--text);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-content {
+    background: var(--card);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+/* =========================
+   TEXT
+========================= */
+
+.text-muted {
+    color: var(--muted) !important;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    filter: brightness(0.9);
+}
+
+.btn-outline-secondary {
+    border-color: var(--border);
+    color: var(--text);
+}
+
+/* =========================
+   INPUTS / SELECTS
+========================= */
+
+.form-control,
+.form-select {
+    background-color: transparent;
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(1, 162, 139, 0.25);
+}
+
+/* dark mode fix */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border-color: #2c2c2c;
+}
+
+[data-theme="dark"] select option {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge {
+    font-weight: 500;
+}
+
+.badge-low {
+    background: #198754;
+}
+
+.badge-medium {
+    background: #ffc107;
+    color: #000;
+}
+
+.badge-high {
+    background: #dc3545;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.app-navbar {
+    background: var(--primary);
     color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
+    background-color: #1e1e1e !important;
+    color: #f1f1f1 !important;
+    -webkit-text-fill-color: #f1f1f1 !important;
+    /* FIX dla Chrome */
+}
+
+/* placeholder */
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #888 !important;
+}
+
+/* focus */
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
+    border-color: #01a28b !important;
+    box-shadow: 0 0 0 0.2rem rgba(1, 162, 139, 0.25) !important;
 }

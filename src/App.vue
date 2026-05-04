@@ -3,19 +3,17 @@
 
     <ProjectBoard v-if="activeProjectId" :projectId="activeProjectId" @close="activeProjectId = null"/>
 
-    <div class="d-flex justify-content-between mb-3">
-      <h1>ManageMe</h1>
-      
+  <nav class="app-navbar d-flex justify-content-between align-items-center px-3 py-2 mb-3">
+        <h5 class="mb-0 text-white fw-bold">ManageMe</h5>
 
-      <!-- user  -->
-       <div class="d-flex gap-3 align-items-center">
-        <div v-if="user" class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
-            style="width: 38px; height: 38px;"> {{ user.firstName[0] }}{{ user.lastName[0] }}
-            </div>
-      <button class="btn btn-primary" @click="openAdd">+ Add</button>
-      </div>
+           <div class="d-flex gap-3 align-items-center">
+           <button class="btn btn-sm btn-dark" @click="toggleTheme">🌙 / ☀️</button>
 
-    </div>
+    
+
+    <button class="btn btn-light btn-sm fw-bold" @click="openAdd">+ Dodaj projekt</button>
+  </div>
+</nav>
 
     <!-- MODAL -->
     <div v-if="showModal" class="modal d-block">
@@ -48,9 +46,9 @@
       </div>
 
       <div class="card-footer d-flex justify-content-end gap-2">
-        <button class="btn btn-success btn-sm" @click="openProject(p.id)">Open</button>
-        <button class="btn btn-warning btn-sm" @click="edit(p)">edit</button>
-        <button class="btn btn-danger btn-sm" @click="remove(p.id)">delete</button>
+        <button class="btn btn-success btn-sm" @click="openProject(p.id)">Otwórz</button>
+        <button class="btn btn-warning btn-sm" @click="edit(p)">Edytuj</button>
+        <button class="btn btn-danger btn-sm" @click="remove(p.id)">Usuń</button>
       </div>
 
     </div>
@@ -65,6 +63,7 @@ import { projectApi } from "./services/projectApi";
 import type { Project} from "./models/project";
 import ProjectBoard from "./components/ProjectBoard.vue";
 import type { User } from "./models/user";
+import {userApi} from "./services/userApi"
 
 const projects = ref<Project[]>([]);
 const name = ref("");
@@ -73,13 +72,23 @@ const description = ref("");
 const showModal = ref(false);
 const editId = ref<string | null>(null);
 
-const user = ref<User | null>(null);
+const users = userApi.getAll()
+
+
 const activeProjectId = ref<string | null>(null);
+
 
 onMounted(() => {
   projects.value = projectApi.getAll();
   activeProjectId.value = projectApi.getActiveProject();
+
+  const saved =
+    localStorage.getItem("theme") ||
+    (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+
+  setTheme(saved)
 });
+
 
 function openAdd() {
   editId.value = null;
@@ -121,4 +130,14 @@ function openProject(id: string) {
   projectApi.setActiveProject(id);
   activeProjectId.value = id;
 }
+function setTheme(theme: string) {
+  document.documentElement.setAttribute("data-theme", theme)
+  localStorage.setItem("theme", theme)
+}
+
+function toggleTheme() {
+  const current = localStorage.getItem("theme") || "light"
+  setTheme(current === "light" ? "dark" : "light")
+}
+
 </script>

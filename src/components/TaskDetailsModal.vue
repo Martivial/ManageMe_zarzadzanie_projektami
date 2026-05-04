@@ -16,17 +16,22 @@
           <div>Szacowane godziny: {{ task.estimatedHours }}</div>
         </div>
         <hr>
-        <div>
-          <h4>Przypisz osobę</h4>
-          <select v-model="selectedUserId">
-            <option v-for="u in users.filter(u => u.role !== 'admin')" :key="u.id" :value="u.id">
-            {{ u.firstName }} {{ u.lastName }} {{ u.role }}
-            </option>
-          </select>
-          <button @click="assignUser">Przypisz</button>
-        </div>
-        <button v-if="task?.status === 'doing'" @click="markDone">Zaznacz wykonanie zadania</button>
-        <button @click="$emit('close')">Zamknij</button>
+
+        <div v-if="task?.status === 'todo'">
+          <h6>Przypisz osobę</h6>
+           <div class="input-group input-group-sm w-75">
+            <select v-model="selectedUserId" class="form-select form-select-sm border border-primary shadow-sm">
+               <option v-for="u in users.filter(u => u.role !== 'admin')" :key="u.id" :value="u.id">
+                 {{ u.firstName }} {{ u.lastName }} {{ u.role }}
+              </option>
+             </select>
+
+             <button class="btn btn-primary" @click="assignUser">Przypisz</button>
+          </div>
+          </div>
+
+        <button v-if="task?.status === 'doing'" @click="markDone" class="btn btn-success btn-sm  me-2">Zaznacz wykonanie zadania</button>
+        <button @click="$emit('close')" class="btn btn-danger btn-sm mt-2">Zamknij</button>
 
       </div>
     </div>
@@ -63,6 +68,8 @@ function formatDate(date?: string) {
 }
 function assignUser() {
   if (!props.task) return
+  if(props.task.status !=="todo") return
+
   props.task.assignedUserId = selectedUserId.value ?? undefined
 
   if(props.task.status === "todo") {
@@ -90,4 +97,6 @@ function markDone() {
   taskApi.updateStoryStatus(props.task.storyId);
   emit("updated")
 }
+
+
 </script>
