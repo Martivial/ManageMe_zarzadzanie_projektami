@@ -1,7 +1,7 @@
 <template>
   <div class="container py-4">
 
-    <ProjectBoard v-if="activeProjectId" :projectId="activeProjectId" @close="activeProjectId = null"/>
+    <ProjectBoard v-if="activeProjectId" :projectId="activeProjectId" @close="close"/>
 
   <nav class="app-navbar d-flex justify-content-between align-items-center px-3 py-2 mb-3">
         <h5 class="mb-0 text-white fw-bold">ManageMe</h5>
@@ -15,7 +15,7 @@
   </div>
 </nav>
 
-    <!-- MODAL -->
+  
     <div v-if="showModal" class="modal d-block">
       <div class="modal-dialog">
         <div class="modal-content p-3">
@@ -34,7 +34,6 @@
       </div>
     </div>
 
- <!-- ?lista -->
    <div class="row mt-3">
   <div v-for="p in projects" :key="p.id" class="col-md-4 mb-3">
     <div class="card shadow-sm h-100">
@@ -62,8 +61,6 @@ import { ref, onMounted } from "vue";
 import { projectApi } from "./services/projectApi";
 import type { Project} from "./models/project";
 import ProjectBoard from "./components/ProjectBoard.vue";
-import type { User } from "./models/user";
-import {userApi} from "./services/userApi"
 
 const projects = ref<Project[]>([]);
 const name = ref("");
@@ -71,8 +68,6 @@ const description = ref("");
 
 const showModal = ref(false);
 const editId = ref<string | null>(null);
-
-const users = userApi.getAll()
 
 
 const activeProjectId = ref<string | null>(null);

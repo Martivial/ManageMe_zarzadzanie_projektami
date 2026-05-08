@@ -1,6 +1,4 @@
-/* =========================
-   THEME VARIABLES
-========================= */
+
 
 :root {
     --primary: #01a28b;
@@ -24,9 +22,6 @@
     --border: #2c2c2c;
 }
 
-/* =========================
-   GLOBAL
-========================= */
 
 body {
     background: var(--bg);
@@ -34,17 +29,11 @@ body {
     transition: all 0.25s ease;
 }
 
-/* =========================
-   LAYOUT
-========================= */
 
 .border-end {
     border-color: var(--border) !important;
 }
 
-/* =========================
-   CARDS
-========================= */
 
 .card {
     background: var(--card);
@@ -58,27 +47,17 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* =========================
-   MODAL
-========================= */
-
 .modal-content {
     background: var(--card);
     color: var(--text);
     border-color: var(--border);
 }
 
-/* =========================
-   TEXT
-========================= */
 
 .text-muted {
     color: var(--muted) !important;
 }
 
-/* =========================
-   BUTTONS
-========================= */
 
 .btn-primary {
     background-color: var(--primary);
@@ -94,10 +73,6 @@ body {
     color: var(--text);
 }
 
-/* =========================
-   INPUTS / SELECTS
-========================= */
-
 .form-control,
 .form-select {
     background-color: transparent;
@@ -111,7 +86,6 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(1, 162, 139, 0.25);
 }
 
-/* dark mode fix */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select {
     background-color: #1e1e1e;
@@ -124,9 +98,6 @@ body {
     color: #f1f1f1;
 }
 
-/* =========================
-   BADGES
-========================= */
 
 .badge {
     font-weight: 500;
@@ -145,9 +116,6 @@ body {
     background: #dc3545;
 }
 
-/* =========================
-   NAVBAR
-========================= */
 
 .app-navbar {
     background: var(--primary);
@@ -162,20 +130,18 @@ body {
     background-color: #1e1e1e !important;
     color: #f1f1f1 !important;
     -webkit-text-fill-color: #f1f1f1 !important;
-    /* FIX dla Chrome */
 }
 
-/* placeholder */
 [data-theme="dark"] .form-control::placeholder,
 [data-theme="dark"] input::placeholder,
 [data-theme="dark"] textarea::placeholder {
     color: #888 !important;
 }
 
-/* focus */
 [data-theme="dark"] .form-control:focus,
 [data-theme="dark"] input:focus,
 [data-theme="dark"] textarea:focus {
     border-color: #01a28b !important;
     box-shadow: 0 0 0 0.2rem rgba(1, 162, 139, 0.25) !important;
 }
+
