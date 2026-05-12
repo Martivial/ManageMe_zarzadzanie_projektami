@@ -55,9 +55,14 @@ const status = ref<"todo" | "doing" | "done">("todo");
 const priority = ref<"low" | "medium" | "high">("low");
 const emit = defineEmits(["created", "close"]);
 const editingId = ref<string | null>(null);
+
     
-const props = defineProps<{projectId: string; status: "todo" | "doing" | "done"; story?: any;
-}>();
+const props = defineProps<{
+  projectId: string
+  status: "todo" | "doing" | "done"
+  story?: any
+  ownerId: number
+}>()
 
 watch(() => props.story, (s) => {
   if (s) {
@@ -76,32 +81,30 @@ watch(() => props.story, (s) => {
   }
 }, { immediate: true });
 
-
 function save() {
   if (!name.value) return;
 
+  const currentUserId = Number(localStorage.getItem("currentUserId"));
+
+  const storyPayload = {
+    id: editingId.value ?? String(Date.now()),
+    name: name.value,
+    description: description.value,
+    priority: priority.value,
+    status: status.value,
+    projectId: props.projectId,
+
+    ownerId: editingId.value
+      ? props.story?.ownerId ?? currentUserId
+      : currentUserId,
+
+    createdAt: new Date().toISOString()
+  };
+
   if (editingId.value) {
-    storyApi.update({
-      id: editingId.value,
-      name: name.value,
-      description: description.value,
-      priority: priority.value,
-      status: status.value,
-      projectId: props.projectId,
-      ownerId: "1",
-      createdAt: new Date().toISOString()
-    });
+    storyApi.update(storyPayload);
   } else {
-    storyApi.create({
-      id: String(Date.now()),
-      name: name.value,
-      description: description.value,
-      priority: priority.value,
-      status: props.status,
-      projectId: props.projectId,
-      ownerId: "1",
-      createdAt: new Date().toISOString()
-    });
+    storyApi.create(storyPayload);
   }
 
   emit("created");

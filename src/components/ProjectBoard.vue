@@ -96,8 +96,14 @@
   </div>
 
   <StoryCreateModal 
-  v-if="showModal" :projectId="projectId" :status="selectedStatus" :story="selectedStory" @close="showModal=false" @created="reload"
-  />
+  v-if="showModal"
+  :projectId="projectId"
+  :status="selectedStatus"
+  :story="selectedStory"
+  :ownerId="currentUserId"
+  @close="showModal=false"
+  @created="reload"
+/>
   <TaskModal v-if="showTaskModal" :story="selectedStoryForTask" @close = "showTaskModal = false" @updated="reload" />
 
 </template>
@@ -114,7 +120,6 @@ import { projectApi } from "../services/projectApi";
 import type { Project } from "../models/project";
 import TaskModal from "./TaskModal.vue";
 
-
 const selectedStatus = ref<"todo" | "doing" | "done">("todo");
 const allStories = ref(storyApi.getAll());
 const showModal = ref(false);
@@ -126,7 +131,7 @@ const project = computed<Project | undefined>(() =>
 
 const selectedStoryForTask = ref<Story | null> (null);
 const showTaskModal = ref(false);
-
+const currentUserId = Number(localStorage.getItem("currentUserId"))
 
 onMounted(() => {
   allStories.value = storyApi.getAll();

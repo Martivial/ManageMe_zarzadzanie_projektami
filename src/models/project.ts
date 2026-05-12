@@ -10,7 +10,7 @@ export interface Story {
     priority: "low" | "medium" | "high";
     status: "todo" | "doing" | "done";
     projectId: string;
-    ownerId: string;
+    ownerId: number;
     createdAt: string;
 }
 export interface Task {
